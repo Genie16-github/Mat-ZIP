@@ -95,7 +95,7 @@ public class ReviewService {
         return reviewPage.map(this::convertToReviewDTO);
     }
 
-    @Cacheable(value = "myReviewListCache", key = "#authorId")
+    @Cacheable(value = "myReviewListCache", key = "T(java.util.Objects).hash(#matzipId, #authorId)")
     public Page<ReviewListDTO> findByMatzipIdWithAuthorAndConvertToReviewDTO(Long matzipId, Long authorId, int pageSize, int pageNumber) {
         Sort sort = Sort.by(Sort.Direction.DESC, "views");
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
@@ -187,6 +187,7 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+    @Transactional
     public void updateViewCountWithCookie(Review review, HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         Cookie cookie = null;
